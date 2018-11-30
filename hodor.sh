@@ -13,7 +13,7 @@ EXP_H="-h           Prints this message"
 EXP_L="-l           List all saved shortcuts"
 EXP_S="-s [alias]   If alias is specified save current PWD to alias, otherwise store in temp. Will override an alias if it already exists."
 
-HODOR_RC_PATH="$HOME/.hodor"
+HODOR_RC_PATH="${HOME}/.hodor"
 HODOR_ALI_FILE="hodor_alias.cfg"
 HODOR_TMP_FILE="hodor_now.tmp"
 
@@ -31,20 +31,20 @@ $EXP_S" 1>&2
 init() 
 {
     #DIR
-    if [ ! -d $HODOR_RC_PATH ]   
+    if [ ! -d "${HODOR_RC_PATH}" ]   
     then
-        mkdir $HODOR_RC_PATH
+        mkdir "${HODOR_RC_PATH}"
     fi
 
     #FILES
-    if [ ! -f "$HODOR_RC_PATH/$HODOR_ALI_FILE" ]
+    if [ ! -f "${HODOR_RC_PATH}/${HODOR_ALI_FILE}" ]
     then
-        touch "$HODOR_RC_PATH/$HODOR_ALI_FILE"
+        touch "${HODOR_RC_PATH}/${HODOR_ALI_FILE}"
     fi
 
-    if [ ! -f "$HODOR_RC_PATH/$HODOR_TMP_FILE" ]
+    if [ ! -f "${HODOR_RC_PATH}/${HODOR_TMP_FILE}" ]
     then
-        touch "$HODOR_RC_PATH/$HODOR_TMP_FILE"
+        touch "${HODOR_RC_PATH}/${HODOR_TMP_FILE}"
     fi
 }
 
@@ -64,27 +64,27 @@ save_alias()
 #Opens file and writes the new alias to file, will override an existing alias
 save_n_override_alias()
 {   
-    found="$(cat $HODOR_RC_PATH/$1 | grep -e "$2=")"
+    found="$(cat "${HODOR_RC_PATH}/$1" | grep -e "$2=")"
     if [ -z "$found" ]
     then
-        echo "$2=$3" >> "$HODOR_RC_PATH/$1"
+        echo "$2=$3" >> "${HODOR_RC_PATH}/$1"
     else
-        sed -i "/${2}=/c\\${2}=${3}" $HODOR_RC_PATH/$1
+        sed -i "/${2}=/c\\${2}=${3}" "${HODOR_RC_PATH}/$1"
     fi
 }
 
 list_aliases()
 {
-    echo $(cat $HODOR_RC_PATH/$HODOR_TMP_FILE) 1>&2
+    echo $(cat "${HODOR_RC_PATH}/${HODOR_TMP_FILE}") 1>&2
     while IFS='' read -r line || [[ -n "$line" ]]; do
         echo "$line" 1>&2
-    done < "$HODOR_RC_PATH/$HODOR_ALI_FILE"
+    done < "${HODOR_RC_PATH}/${HODOR_ALI_FILE}"
 }
 
 # Load path
 load_path() 
 {
-    hodor_p="$(cat $HODOR_RC_PATH/$1 | grep -Po "(?<=$2=).*")"
+    hodor_p="$(cat "${HODOR_RC_PATH}/$1" | grep -Po "(?<=$2=).*")"
     echo $hodor_p
 }
 
@@ -105,7 +105,7 @@ init
 if [ $# == 0 ]
 then
     #Emtpy arguement list, try to get the temp path and cd
-    output=$(load_path $HODOR_TMP_FILE temp)
+    output=$(load_path "${HODOR_TMP_FILE}" temp)
     if [ -z "$output" ]
     then    
         echo "No nameless path exists, type hodor -s without arguements to store a temp path" 1>&2
@@ -149,7 +149,7 @@ shift "$((OPTIND-1))"
 
 # Last thing we do is consider the subcommand an alias
 subcommand=$1
-output=$(load_path $HODOR_ALI_FILE $subcommand)
+output=$(load_path "${HODOR_ALI_FILE}" $subcommand)
 if [ -z "$output" ]
 then    
     echo "Alias: $subcommand doesnt exist" 1>&2
