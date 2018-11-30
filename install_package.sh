@@ -1,4 +1,4 @@
-#!bin/bash
+#!/bin/bash
 
 HODOR_RC_PATH="$HOME/.hodor"
 BASHRC_SOURCE="source $HODOR_RC_PATH/exec.sh"
